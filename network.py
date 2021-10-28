@@ -18,10 +18,10 @@ class AE_MNIST(nn.Module):
         super().__init__()
         self.enc1 = nn.Sequential(
             nn.Linear(784,500),nn.BatchNorm1d(500),nn.ReLU(),
-            nn.Linear(500,500),nn.BatchNorm1d(500),nn.ReLU(),
+            nn.Linear(500,500)
         )
         self.enc2 = nn.Sequential(
-           nn.Linear(500,2000),nn.BatchNorm1d(2000),nn.ReLU(),
+           nn.ReLU(),nn.Linear(500,2000),nn.BatchNorm1d(2000),nn.ReLU(),
            nn.Linear(2000,10)
         )
         self.dec = nn.Sequential(

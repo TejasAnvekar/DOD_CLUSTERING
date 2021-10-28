@@ -1,9 +1,4 @@
-from sklearn import metrics
 from network import AE_MNIST
-import torch.nn.functional as F
-from sklearn.metrics import adjusted_rand_score as ari_score
-from sklearn.metrics.cluster import normalized_mutual_info_score as nmi_score
-from sklearn.cluster import KMeans
 import argparse
 from optim import optimizer as op
 from loss import loss as LOSS
@@ -17,7 +12,7 @@ from Metrics import cluster_metrics as CM
 import utils
 from collections import defaultdict
 import sys
-sys.path.insert(0, "/home/tejas/experimentations/DOD_CLUSTERING")
+sys.path.insert(0, "/home/beast/BEAST/Tejas/DOD_CLUSTERING/")
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
@@ -101,7 +96,7 @@ def main(**kwargs):
 
                             eval_dict1 = None
                             r_path = kwargs["root"] + \
-                                f"dataset:{kwargs['dataset']}_BS:{batch_size}_LR:{lr}_optim:{optimizer}_alpha:{alpha}_recentre:{kwargs['recenter']}"
+                                f"dataset:{kwargs['dataset']}_BS:{batch_size}_LR:{lr}_optim:{optimizer}_alpha:{alpha}_beta:{beta}_dod_dis:{dod}recentre:{kwargs['recenter']}"
 
                             results = utils.save_results(r_path)
 
@@ -165,12 +160,12 @@ def main(**kwargs):
                                         loop.set_postfix(Recon_loss=recon_loss.item(
                                         ), dod_loss=dodloss.item())
 
-                                # x_sample = get_sample(kwargs["sample_path"],device)
-                                # with torch.no_grad():
-                                #     model.eval()
-                                #     x_hat,_,_ = model(x_sample)
-                                #     results.save_images(epoch,x_sample,x_hat)
-                                # model.train()
+                                x_sample = get_sample(kwargs["sample_path"],device)
+                                with torch.no_grad():
+                                    model.eval()
+                                    x_hat,_,_ = model(x_sample)
+                                    results.save_images(epoch,x_sample,x_hat)
+                                model.train()
 
                                 MSE.append(MEAN(mse))
                                 SSIM.append(MEAN(ssim))
@@ -227,8 +222,8 @@ if __name__ == "__main__":
     )
     c = args.parse_args()
     main(
-        root="/home/tejas/experimentations/DOD_CLUSTERING/FMNIST/logs/",
-        # sample_path='/home/beast/DATA/DATASET_NPZ/FMNIST10.npz',
+        root="/home/beast/BEAST/Tejas/DOD_CLUSTERING/FMNIST/logs/",
+        sample_path='/home/beast/BEAST/DATA/DATASET_NPZ/FMNIST10.npz',
         epochs=200,
         batch_sizes=[512],
         learning_rates=[1e-3],

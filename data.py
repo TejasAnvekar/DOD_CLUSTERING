@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from torch.utils.data import Dataset
 
-path = "/home/beast/DATA/DATASET_NPZ/"
+path = "/home/beast/BEAST/DATA/DATASET_NPZ/"
 
 
 def load_mnist(path=path+"MNIST_Combined.npz"):
@@ -47,7 +47,7 @@ def load_emnist(path=path+"EMNIST_Combined.npz"):
     return x, y
 
 
-def load_fmnist(path="/home/tejas/experimentations/Myidec/IDEC-pytorch/data/fmnist.npz"):
+def load_fmnist(path=path+"FashionMNIST_Combined.npz"):
     f = np.load(path)
 
     x_train, y_train, x_test, y_test = f['x_train'], f['y_train'], f[
@@ -56,7 +56,7 @@ def load_fmnist(path="/home/tejas/experimentations/Myidec/IDEC-pytorch/data/fmni
     x = np.concatenate((x_train, x_test)).astype(np.float32)
     y = np.concatenate((y_train, y_test)).astype(np.int32)
 
-    x = np.expand_dims(x, axis=1).astype(np.float32)
+    # x = np.expand_dims(x, axis=1).astype(np.float32)
 
     print('FMNIST samples', x.shape)
     return x, y

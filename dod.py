@@ -16,17 +16,17 @@ class DOD():
 
     def distance(self,v1,v2):
         if self.dis == "mse":
-            return torch.mean((v1-v2)**2,dim=1)
+            return F.mse_loss(v1,v2)
         if self.dis == "mae":
-            return torch.mean(torch.abs(v1-v2),dim=1)
+            return F.l1_loss(v1,v2)
         if self.dis =="cosine":
             return 1-F.cosine_similarity(v1,v2)
         
     def LDM(self,v1,v2):
-        return torch.mean(v1-v2,dim=0)
+        return torch.mean(v1.exp()-v2.exp(),dim=0)
 
     def tuple_of_tensors_to_tensor(self,tuple_of_tensors):
-        return torch.cat(list(tuple_of_tensors),dim=0)
+        return torch.mean(torch.stack(list(tuple_of_tensors),dim=0))
 
     def regularizor(self,p=1):
         a1_norm = torch.norm(self.a1,p=p)
@@ -44,11 +44,11 @@ class DOD():
     def __call__(self):
         X = self.distance(self.x1,self.x2)
         A = self.distance(self.a1,self.a2)
-        Z = self.distance(self.z1,self.z2)
-        # Z = self.tuple_of_tensors_to_tensor(jacobian(self.LDM,(self.z1,self.z2)))
+        # Z = self.distance(self.z1,self.z2)
+        Z = self.tuple_of_tensors_to_tensor(jacobian(self.LDM,(self.z1,self.z2)))
         # print(X.shape,A.shape,Z.shape)
 
         # exit()
 
-        return torch.mean((torch.abs(X-A)+torch.abs(A-Z))/2,dim=0) + self.regularizor()
+        return torch.mean((torch.abs(X-A)+torch.abs(A-Z))/2,dim=0)
         
